@@ -1,4 +1,8 @@
 
+I'm trying to use the drand_lib.move. However, I don't know how to pass drand_sig and drand_prev_sig into the verify_drand_signature function as vector. The test does pass when I hardcoded the drand_sig and drand_prev_sig in it. Yet I cannot pass it through cli.
+
+The example Drand I use https://drand.cloudflare.com/8990e7a9aaed2ffed73dbd7092123d6f289930540d7651336225dc172e51b2ce/public/3084797
+
 
 ```
 sui client publish . --gas COIN_OBJ --gas-budget 300000000 --skip-dependency-verification
