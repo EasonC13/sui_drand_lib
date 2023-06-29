@@ -20,3 +20,58 @@ sui client call --function just_check_drand --module drand_lib --package 0xbb160
 
 Example Error:
 ![Alt text](image.png)
+
+## Success with the following:
+
+```
+sui client call --function just_check_drand --module drand_lib --package 0xbb16039ad852468aed4a72ae7e4740efc8a78790da382a82afdbf71a47911095 --args "[148,67,130,63,56,62,102,171,7,34,21,218,136,8,124,49,177,41,195,80,249,238,187,6,81,246,45,164,98,225,155,56,212,163,92,47,101,216,37,48,72,104,215,86,237,129,88,80,22,185,232,71,207,92,81,163,37,224,208,37,25,16,108,225,153,156,146,146,170,139,114,102,9,215,146,160,8,8,220,158,152,16,174,118,233,98,46,68,147,77,20,190,50,239,156,98]" "[137,170,104,12,60,222,145,81,125,255,217,248,27,187,92,120,186,161,195,180,215,107,27,252,237,136,231,216,68,159,240,220,85,81,94,9,54,77,176,29,5,214,43,222,3,167,208,129,17,249,81,49,167,254,242,162,126,28,138,234,142,73,145,137,33,77,56,210,125,234,186,246,123,53,130,25,73,255,247,59,19,240,241,130,88,143,225,220,115,99,7,66,187,149,186,41]" 3084797 --gas-budget 100000000
+```
+
+```
+function hexToUint8Array(hexString) {
+  // Remove the "0x" prefix if present
+  if (hexString.startsWith("0x")) {
+    hexString = hexString.slice(2);
+  }
+
+  // Ensure the hex string has an even number of characters
+  if (hexString.length % 2 !== 0) {
+    throw new Error("Invalid hex string");
+  }
+
+  // Create a Uint8Array with half the length of the hex string
+  const length = hexString.length / 2;
+  const uint8Array = new Uint8Array(length);
+
+  // Convert each pair of hex characters to a byte and store it in the Uint8Array
+  for (let i = 0; i < length; i++) {
+    const byteString = hexString.substr(i * 2, 2);
+    const byte = parseInt(byteString, 16);
+    uint8Array[i] = byte;
+  }
+  let arrayString = Array.from(uint8Array).join(", ");
+
+  return JSON.parse(`[${arrayString}]`);
+}
+// ...
+tx.moveCall({
+        target:
+          "0xbb16039ad852468aed4a72ae7e4740efc8a78790da382a82afdbf71a47911095::drand_lib::just_check_drand",
+        arguments: [
+          tx.pure(
+            hexToUint8Array(
+              "9443823f383e66ab072215da88087c31b129c350f9eebb0651f62da462e19b38d4a35c2f65d825304868d756ed81585016b9e847cf5c51a325e0d02519106ce1999c9292aa8b726609d792a00808dc9e9810ae76e9622e44934d14be32ef9c62"
+            ),
+            "vector<u8>"
+          ),
+          tx.pure(
+            hexToUint8Array(
+              "89aa680c3cde91517dffd9f81bbb5c78baa1c3b4d76b1bfced88e7d8449ff0dc55515e09364db01d05d62bde03a7d08111f95131a7fef2a27e1c8aea8e499189214d38d27deabaf67b35821949fff73b13f0f182588fe1dc73630742bb95ba29"
+            ),
+            "vector<u8>"
+          ),
+          tx.pure(3084797, "u64"),
+        ],
+      });
+      await walletKit.signAndExecuteTransactionBlock({ transactionBlock: tx });
+```
